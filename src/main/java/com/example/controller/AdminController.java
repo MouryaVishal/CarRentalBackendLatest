@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+// * All Admin RestApi Listed Here.
+
 @RestController
 @RequestMapping("admin")
 public class AdminController {
@@ -28,7 +31,9 @@ public class AdminController {
     private CustomerService customerService;
 
 
-//    For Category
+//    !For Category
+//    *Api related to Category like addcategory,delete,update
+
     @PostMapping("/addcategory")
     public ResponseEntity<Object> addCategory(@RequestBody CategoryRequest request){
         return categoryService.addCategory(request);
@@ -49,8 +54,8 @@ public class AdminController {
     }
 
 
-
-//    For Car
+//    !For car
+//    *Api related to Category like addcar,delete,update...
     @PostMapping("/addcar")
     public ResponseEntity<Object> addCar(@RequestBody CarRequest car){
         return carService.addCar(car);
@@ -82,8 +87,9 @@ public class AdminController {
         return carService.updateById(id,car);
     }
 
-   // Coupon RestApi
 
+//   !For Coupon
+//    *Api related to Category like addCoupon,delete,update...
     @PostMapping("/addcoupon")
     public ResponseEntity<Object> addCoupon(@RequestBody CouponResquestToAdd coupon){
         ResponseEntity<Object> newCategory=couponService.addCoupon(coupon);
@@ -107,7 +113,7 @@ public class AdminController {
     }
 
 
-//    CustomerAPI
+//    ! CustomerAPI
     @GetMapping("/allcustomer")
     public ResponseEntity<Iterable<Customer>> allcustomer(){
         Iterable<Customer> customers=customerService.allCustomer();

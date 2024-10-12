@@ -50,13 +50,12 @@ public class RentalOrderService implements RentalOrderServiceImterface {
             return new ResponseEntity<>("Sorry! Customer not found...",HttpStatus.NOT_FOUND);
         }
 
-        System.out.println("car");
         Optional<Car> car = carRepository.findByName(carName);
         if(car.isEmpty()){
             return new ResponseEntity<>("Sorry! car not found...",HttpStatus.NOT_FOUND);
         }
-        if(!car.get().getIsAvailable()){
-            return new ResponseEntity<>("Sorry! car is used by other customer...",HttpStatus.NOT_FOUND);
+        if(car.get().getCountOfThatCar()<=0){
+            return new ResponseEntity<>("Sorry! No instance of "+carName+" is available right now...",HttpStatus.NOT_FOUND);
         }
         if(!Objects.equals(car.get().getCategoryId().getCategoryName(), carCategoryName)){
             return new ResponseEntity<>("Sorry! "+carName+" with "+carCategoryName+" category is not present...",HttpStatus.NOT_FOUND);
@@ -91,6 +90,7 @@ public class RentalOrderService implements RentalOrderServiceImterface {
         }
         RentalOrder rentalOrder = new RentalOrder();
         car.get().setIsAvailable(false);
+        car.get().setCountOfThatCar(car.get().getCountOfThatCar()-1);
         currCustomer.get().setFistTime(false);
         rentalOrder.setOrderTotal(totalCost);
         rentalOrder.setCustomer(currCustomer.get());
@@ -101,7 +101,6 @@ public class RentalOrderService implements RentalOrderServiceImterface {
         return new ResponseEntity<>(rentalOrder,HttpStatus.OK);
     }
     private double applyCouponDiscount(double totalCost, List<Coupon> coupons, int rentalDays) {
-        System.out.println(coupons);
         double discount = 0;
         if (rentalDays >= 5 && rentalDays < 10) {
             discount =Math.max(discount,totalCost * 0.1);

@@ -24,7 +24,7 @@ public class CarController {
         return ResponseEntity.ok(cars);
     }
 
-    //    view cars as per category
+    // * view cars as per category
     @GetMapping("/category/{category}")
     public ResponseEntity<Iterable<Car>> allCar(@PathVariable String category){
         Iterable<Car> cars=carService.searchByCategory(category);
@@ -37,7 +37,5 @@ public class CarController {
         Optional<Car> cars=carService.searchByCarName(name);
         return ResponseEntity.ok(cars);
     }
-
-//    Rent a Car
 
 }
