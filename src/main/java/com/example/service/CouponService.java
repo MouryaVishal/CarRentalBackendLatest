@@ -11,6 +11,7 @@ import com.example.repo.CategoryRepository;
 import com.example.repo.CouponRepository;
 import com.example.repo.CustomerRepository;
 import com.example.request.CouponResquestToAdd;
+import com.example.service.servicesInterface.CouponServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CouponService {
+public class CouponService implements CouponServiceInterface {
     @Autowired
     private CouponRepository couponRepository;
 

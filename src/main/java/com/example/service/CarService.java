@@ -7,6 +7,7 @@ import com.example.model.Category;
 import com.example.repo.CarRepository;
 import com.example.repo.CategoryRepository;
 import com.example.request.CarRequest;
+import com.example.service.servicesInterface.CarServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CarService {
+public class CarService implements CarServiceInterface {
     @Autowired
     private CarRepository carRepository;
     @Autowired

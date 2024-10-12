@@ -6,6 +6,7 @@ import com.example.model.Coupon;
 import com.example.model.Customer;
 import com.example.repo.CustomerRepository;
 import com.example.request.CustomerResquestToRegister;
+import com.example.service.servicesInterface.CustomerServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class CustomerService {
+public class CustomerService implements CustomerServiceInterface {
     @Autowired
     private CustomerRepository customerRepository;
     public ResponseEntity<Object> addCustomer(CustomerResquestToRegister customer){

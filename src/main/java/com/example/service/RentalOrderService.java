@@ -10,6 +10,7 @@ import com.example.repo.CustomerRepository;
 import com.example.repo.RentalOrderRepository;
 
 import com.example.request.RequsetRentalOrder;
+import com.example.service.servicesInterface.RentalOrderServiceImterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ import java.util.Optional;
 
 @Service
 
-public class RentalOrderService {
+public class RentalOrderService implements RentalOrderServiceImterface {
     @Autowired
     private RentalOrderRepository rentalOrderRepository;
     @Autowired
