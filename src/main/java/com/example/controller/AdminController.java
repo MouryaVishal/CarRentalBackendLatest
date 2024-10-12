@@ -3,10 +3,13 @@ package com.example.controller;
 import com.example.model.Car;
 import com.example.model.Category;
 import com.example.model.Coupon;
+import com.example.model.Customer;
+import com.example.request.CarRequest;
 import com.example.request.CouponResquestToAdd;
 import com.example.service.CarService;
 import com.example.service.CategoryService;
 import com.example.service.CouponService;
+import com.example.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,8 @@ public class AdminController {
     private CouponService couponService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private CustomerService customerService;
 
 
 //    For Category
@@ -47,7 +52,7 @@ public class AdminController {
 
 //    For Car
     @PostMapping("/addcar")
-    public ResponseEntity<Car> addCar(@RequestBody Car car){
+    public ResponseEntity<Car> addCar(@RequestBody CarRequest car){
         Car newCategory=carService.addCar(car);
         return ResponseEntity.ok(newCategory);
     }
@@ -90,5 +95,13 @@ public class AdminController {
     @PutMapping("/updatecoupon/{id}")
     public ResponseEntity<Coupon> updateCar(@PathVariable Long id,@RequestBody CouponResquestToAdd coupon){
         return couponService.updateById(id,coupon);
+    }
+
+
+//    CustomerAPI
+    @GetMapping("/allcustomer")
+    public ResponseEntity<Iterable<Customer>> allcustomer(){
+        Iterable<Customer> customers=customerService.allCustomer();
+        return ResponseEntity.ok(customers);
     }
 }

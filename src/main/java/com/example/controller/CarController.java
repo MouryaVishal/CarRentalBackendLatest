@@ -27,7 +27,7 @@ public class CarController {
     //    view cars as per category
     @GetMapping("/category/{category}")
     public ResponseEntity<Iterable<Car>> allCar(@PathVariable String category){
-        Iterable<Car> cars=carService.allCarsByCategory(category);
+        Iterable<Car> cars=carService.searchByCategory(category);
         return ResponseEntity.ok(cars);
     }
 

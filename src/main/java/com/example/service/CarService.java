@@ -6,6 +6,7 @@ import com.example.model.Car;
 import com.example.model.Category;
 import com.example.repo.CarRepository;
 import com.example.repo.CategoryRepository;
+import com.example.request.CarRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,13 @@ public class CarService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public Car addCar(Car car){
+    public Car addCar(CarRequest request){
+        String name= request.getName();
+        Double pricePerDay= request.getPricePerDay();
+        String  carCategoryName= request.getCarCategoryName();
+        Boolean isAvailable=request.getIsAvailable();
+
+
         return carRepository.save(car);
     }
 
@@ -53,15 +60,14 @@ public class CarService {
         }
     }
 
-    public Iterable<Car> allCarsByCategory( String categoryName){
-        List<Category> c = (List<Category>) categoryRepository.findByCategoryName(categoryName);
-        return carRepository.findByCategoryName(c.get(0).getId());
-    }
-
-
     public Optional<Car> searchByCarName( String carName){
         return (Optional<Car>) carRepository.findByName(carName);
     }
 
+    public Iterable<Car> searchByCategory(String categoryName){
+        Optional<Category> category=categoryRepository.findByCategoryName(categoryName);
+        Iterable<Car> cars=carRepository.findByCategoryId(category.get().getId());
+        return cars;
+    }
 
 }

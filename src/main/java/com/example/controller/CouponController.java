@@ -24,10 +24,9 @@ public class CouponController {
     }
 
     @GetMapping("/forcurrentCustomer/{id}/{days}")
-    public ResponseEntity<List<Coupon>> forCurrentCustomer(@PathVariable Long id, @PathVariable int days){
-        List<Coupon> coupon=couponService.findCouponForCustomer( id,days);
-        System.out.println("qwq");
-        return ResponseEntity.ok(coupon);
+    public ResponseEntity<List<Object>> forCurrentCustomer(@PathVariable Long id, @PathVariable int days){
+        return couponService.findCouponForCustomer( id,days);
+
     }
 
 }

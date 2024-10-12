@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RequsetRentalOrder {
     private String customerName;
+    private String customerEmail;
     private String carName;
     private List<String> couponNames;
     private int noOfDaysForRent;

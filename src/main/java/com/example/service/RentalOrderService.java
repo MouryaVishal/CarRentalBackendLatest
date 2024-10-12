@@ -40,10 +40,12 @@ public class RentalOrderService {
         List<String> couponNames=request.getCouponNames();
         int noOfDaysForRent=request.getNoOfDaysForRent();
         String carCategoryName=request.getCarCategoryName();
+        String customerEmail=request.getCustomerEmail();
 
         // Fetch customer
         Optional<Customer> currCustomer=customerRepository.findByName(customerName);
-        if(currCustomer.isEmpty()){
+
+        if(currCustomer.isEmpty() || !Objects.equals(currCustomer.get().getEmail(), customerEmail)){
             return new ResponseEntity<>("Sorry! Customer not found...",HttpStatus.NOT_FOUND);
         }
 
@@ -66,7 +68,7 @@ public class RentalOrderService {
 
             Optional<Coupon> coupon=couponRepository.findByName(couponName);
             if(coupon.isEmpty()){
-                return new ResponseEntity<>("Sorry! "+couponName +"  is not provide by company...",HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Sorry! "+couponName +" coupon is not provide by company...",HttpStatus.NOT_FOUND);
             }
             coupon.ifPresent(coupons::add);
         }
@@ -125,10 +127,6 @@ public class RentalOrderService {
 
         return discount;
     }
-
-
-
-
     public Iterable<RentalOrder> allRentralOrder() {
         return rentalOrderRepository.findAll();
     }
@@ -138,19 +136,7 @@ public class RentalOrderService {
             rentalOrderRepository.deleteById(id);
             return "Deleted SuccessFully!!";
         }
-        ;
         return "Delete Fail. No Such id found!!";
     }
 
-    public ResponseEntity<RentalOrder> updateById(Long id, RentalOrder rentalOrder) {
-        Optional<RentalOrder> optionalCategory = rentalOrderRepository.findById(id);
-        if (optionalCategory.isPresent()) {
-//            Category category = optionalCategory.get();
-//            category.setCategoryName(categoryDetails.getCategoryName());
-            RentalOrder updatedCat = rentalOrderRepository.save(rentalOrder);
-            return new ResponseEntity<>(updatedCat, HttpStatus.OK);
-        } else {
-            throw new RentalOrderNotFoundException();
-        }
-    }
 }

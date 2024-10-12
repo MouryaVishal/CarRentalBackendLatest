@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface CarRepository extends JpaRepository<Car,Long> {
     @Query(value = "SELECT c.* FROM car c JOIN category cat ON c.category_id = cat.id WHERE cat.id = :id", nativeQuery = true)
-    Iterable<Car> findByCategoryName(Long id);
+    Iterable<Car> findByCategoryId(Long id);
     Optional<Car> findByName(String carName);
 }

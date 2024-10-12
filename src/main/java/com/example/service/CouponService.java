@@ -12,6 +12,7 @@ import com.example.repo.CouponRepository;
 import com.example.repo.CustomerRepository;
 import com.example.request.CouponResquestToAdd;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -66,9 +67,12 @@ public class CouponService {
         }
     }
 
-    public List<Coupon> findCouponForCustomer(Long id, int days ){
-        List<Coupon> coupons = new ArrayList<>();
-        if(days>50)return coupons;
+    public ResponseEntity<List<Object>> findCouponForCustomer(Long id, int days ){
+        List<Object> coupons = new ArrayList<>();
+        if(days>30) {
+            coupons.add("NO Coupon Available for more than 30days....");
+            return new ResponseEntity<>(coupons,HttpStatus.NOT_FOUND);
+        }
         Optional<Customer> customer = customerRepository.findById(id);
         if(customer.isEmpty()){
             Coupon co=new Coupon();
@@ -77,10 +81,10 @@ public class CouponService {
             co.setDiscountValue(50D);
             coupons.add(co);
         }
-        if (days>=30){
+        System.out.println(id+ " "+days+" weqew");
+        if (days>=20){
             Coupon co=new Coupon();
             co.setName("Coupon30");
-            co.setId(2L);
             co.setDiscountValue(30D);
             coupons.add(co);
         }else if (days>=10){
@@ -97,6 +101,6 @@ public class CouponService {
             coupons.add(co);
         }
         System.out.println(coupons);
-        return coupons;
+        return new ResponseEntity<>(coupons, HttpStatus.OK);
     }
 }
