@@ -3,12 +3,14 @@ package com.example.service;
 import com.example.exception.CategoryNotFoundException;
 import com.example.model.Category;
 import com.example.repo.CategoryRepository;
+import com.example.request.CategoryRequest;
 import com.example.service.servicesInterface.CategoryServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -16,8 +18,16 @@ import java.util.Optional;
 public class CategoryService implements CategoryServiceInterface {
     @Autowired
     private CategoryRepository categoryRepository;
-    public Category addCategory(Category category){
-        return categoryRepository.save(category);
+    public ResponseEntity<Object> addCategory(CategoryRequest request){
+        String categoryName= request.getCategoryName();
+        Optional<Category> category=categoryRepository.findByCategoryName(categoryName);
+        if(category.isEmpty()){
+            Category newCategory=new Category();
+            newCategory.setCategoryName(categoryName);
+            categoryRepository.save(newCategory);
+            return new ResponseEntity<>(newCategory,HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Category:"+categoryName+" is already present....",HttpStatus.NOT_FOUND);
     }
 
     public Iterable<Category> allCategory(){

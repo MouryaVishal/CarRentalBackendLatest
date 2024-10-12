@@ -5,6 +5,7 @@ import com.example.model.Category;
 import com.example.model.Coupon;
 import com.example.model.Customer;
 import com.example.request.CarRequest;
+import com.example.request.CategoryRequest;
 import com.example.request.CouponResquestToAdd;
 import com.example.service.CarService;
 import com.example.service.CategoryService;
@@ -29,9 +30,8 @@ public class AdminController {
 
 //    For Category
     @PostMapping("/addcategory")
-    public ResponseEntity<Category> addCategory(@RequestBody Category category){
-        Category newCategory=categoryService.addCategory(category);
-        return ResponseEntity.ok(newCategory);
+    public ResponseEntity<Object> addCategory(@RequestBody CategoryRequest request){
+        return categoryService.addCategory(request);
     }
     @GetMapping("/allcategory")
     public ResponseEntity<Iterable<Category>> allCategory(){
@@ -52,9 +52,18 @@ public class AdminController {
 
 //    For Car
     @PostMapping("/addcar")
-    public ResponseEntity<Car> addCar(@RequestBody CarRequest car){
-        Car newCategory=carService.addCar(car);
-        return ResponseEntity.ok(newCategory);
+    public ResponseEntity<Object> addCar(@RequestBody CarRequest car){
+        return carService.addCar(car);
+    }
+
+    @PostMapping("/increasecarcount/{id}/{byNum}")
+    public ResponseEntity<Object> increseCountOfCarWithCategory(@PathVariable Long id,@PathVariable int byNum){
+        return carService.increseCountOfCar(id,byNum);
+    }
+
+    @PostMapping("/increasecarcount/{name}/{byNum}")
+    public ResponseEntity<Object> increseCountOfCarWithName(@PathVariable String name,@PathVariable int byNum){
+        return carService.increseCountOfCarByName(name,byNum);
     }
 
     @GetMapping("/allcars")
@@ -69,7 +78,7 @@ public class AdminController {
         return ResponseEntity.ok(responseStr);
     }
     @PutMapping("/updatecar/{id}")
-    public ResponseEntity<Car> updateCar(@PathVariable Long id,@RequestBody Car car){
+    public ResponseEntity<Object> updateCar(@PathVariable Long id,@RequestBody CarRequest car){
         return carService.updateById(id,car);
     }
 

@@ -24,4 +24,5 @@ public class Car {
     @JoinColumn(name = "category_id")
     private Category categoryId;
     private Boolean isAvailable;
+    private int countOfThatCar;
 }

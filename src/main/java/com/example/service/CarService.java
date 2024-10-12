@@ -22,14 +22,52 @@ public class CarService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public Car addCar(CarRequest request){
+    public ResponseEntity<Object> addCar(CarRequest request){
         String name= request.getName();
         Double pricePerDay= request.getPricePerDay();
         String  carCategoryName= request.getCarCategoryName();
         Boolean isAvailable=request.getIsAvailable();
+        int countOfThatCar= request.getCountOfThatCar();
+        Optional<Car> car=carRepository.findByName((name));
+        if(car.isEmpty()){
+            Car newCar=new Car();
+            newCar.setName(name);
+            newCar.setPricePerDay(pricePerDay);
+            Optional<Category> category=categoryRepository.findByCategoryName(carCategoryName);
+            if(category.isEmpty()){
+                return new ResponseEntity<>("Car name:"+name+" with category:"+
+                        carCategoryName+" is not provided by Company...",HttpStatus.NOT_FOUND);
+            }
+            newCar.setCategoryId(category.get());
+            newCar.setCountOfThatCar(countOfThatCar);
+            newCar.setIsAvailable(isAvailable);
+            carRepository.save(newCar);
+            return new ResponseEntity<>(newCar,HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Car name:"+name+" with category:"+
+                carCategoryName+" is already present...",HttpStatus.NOT_FOUND);
+    }
 
+    public ResponseEntity<Object> increseCountOfCar(Long id,int byNum){
+        Optional<Car> car=carRepository.findById(id);
+        if(car.isEmpty()){
+            return new ResponseEntity<>("Car with id:"+id+" is not provide by Company",HttpStatus.NOT_FOUND);
+        }
+        int previousCOunt=car.get().getCountOfThatCar();
+        car.get().setCountOfThatCar(previousCOunt+byNum);
+        carRepository.save(car.get());
+        return new ResponseEntity<>(car.get(),HttpStatus.OK);
+    }
 
-        return carRepository.save(car);
+    public ResponseEntity<Object> increseCountOfCarByName(String name,int byNum){
+        Optional<Car> car=carRepository.findByName(name);
+        if(car.isEmpty()){
+            return new ResponseEntity<>("Car with id:"+name+" is not provide by Company",HttpStatus.NOT_FOUND);
+        }
+        int previousCount=car.get().getCountOfThatCar();
+        car.get().setCountOfThatCar(previousCount+byNum);
+        carRepository.save(car.get());
+        return new ResponseEntity<>(car.get(),HttpStatus.OK);
     }
 
     public Iterable<Car> allcars(){
@@ -44,17 +82,20 @@ public class CarService {
         return "Delete Fail. No Such id found!!";
     }
 
-    public ResponseEntity<Car> updateById(Long id, Car carDetails) {
-        Optional<Car> optionalCategory = carRepository.findById(id);
-        if (optionalCategory.isPresent()) {
-//            Car car = optionalCategory.get();
-//            car=carDetails;
-////            car.setName(carDetails.getName());
-////            car.setCategoryId(carDetails.getCategoryId());
-////            car.setPricePerDay(carDetails.getPricePerDay());
-////            Car.
-            Car updatedCat = carRepository.save(carDetails);
-            return new ResponseEntity<Car>(updatedCat, HttpStatus.OK);
+    public ResponseEntity<Object> updateById(Long id, CarRequest carDetails) {
+        Optional<Car> car = carRepository.findById(id);
+        if (car.isPresent()) {
+            car.get().setName(carDetails.getName());
+            Optional<Category> category=categoryRepository.findByCategoryName(carDetails.getCarCategoryName());
+            if(category.isEmpty()){
+                return new ResponseEntity<>("Category with name:"+carDetails.getCarCategoryName()+" is not provide by Company",HttpStatus.NOT_FOUND);
+            }
+            car.get().setCategoryId(category.get());
+            car.get().setPricePerDay(carDetails.getPricePerDay());
+            car.get().setCountOfThatCar(carDetails.getCountOfThatCar());
+            car.get().setIsAvailable(carDetails.getIsAvailable());
+            carRepository.save(car.get());
+            return new ResponseEntity<>(car, HttpStatus.OK);
         } else {
             throw new CarNotFoundException();
         }
