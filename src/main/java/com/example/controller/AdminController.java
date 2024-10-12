@@ -66,7 +66,7 @@ public class AdminController {
         return carService.increseCountOfCar(id,byNum);
     }
 
-    @PostMapping("/increasecarcount/{name}/{byNum}")
+    @PostMapping("/increasecarcountbyname/{name}/{byNum}")
     public ResponseEntity<Object> increseCountOfCarWithName(@PathVariable String name,@PathVariable int byNum){
         return carService.increseCountOfCarByName(name,byNum);
     }

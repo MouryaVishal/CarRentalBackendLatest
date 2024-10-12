@@ -81,11 +81,13 @@ public class RentalOrderService implements RentalOrderServiceImterface {
 
         // Calculate total cost
         double totalCost = car.get().getPricePerDay() * noOfDaysForRent;
-
+        List<Coupon> couponApplied=new ArrayList<>();
         if(currCustomer.get().getFistTime()){
             totalCost/=2D;
+            Optional<Coupon> coupon=couponRepository.findByName("FIRSTTIME");
+            couponApplied.add(coupon.get());
         }else{
-            Double discountAmountAfterCouponApply = applyCouponDiscount(totalCost, coupons, noOfDaysForRent);
+            Double discountAmountAfterCouponApply = applyCouponDiscount(totalCost, coupons, noOfDaysForRent,couponApplied);
             totalCost-=discountAmountAfterCouponApply;
         }
         RentalOrder rentalOrder = new RentalOrder();
@@ -97,34 +99,38 @@ public class RentalOrderService implements RentalOrderServiceImterface {
         rentalOrder.setCars(car.get());
         rentalOrder.setRentalDays(noOfDaysForRent);
         rentalOrder.setCoupon(coupons);
+        rentalOrder.setCoupon(couponApplied);
         rentalOrderRepository.save(rentalOrder);
         return new ResponseEntity<>(rentalOrder,HttpStatus.OK);
     }
-    private double applyCouponDiscount(double totalCost, List<Coupon> coupons, int rentalDays) {
+    private double applyCouponDiscount(double totalCost, List<Coupon> coupons, int rentalDays,List<Coupon> appliedCoupons) {
         double discount = 0;
+        Coupon appliedCoupon=null;
         if (rentalDays >= 5 && rentalDays < 10) {
             discount =Math.max(discount,totalCost * 0.1);
+            appliedCoupon=couponRepository.findByName("Coupon10").get();
         } else if (rentalDays >= 10 && rentalDays < 30) {
             discount =Math.max(discount,totalCost * 0.2);
+            appliedCoupon=couponRepository.findByName("Coupon20").get();
         } else if (rentalDays == 30) {
             discount =Math.max(discount,totalCost * 0.3);
+            appliedCoupon=couponRepository.findByName("Coupon30").get();
         }
-        for (Coupon coupon : coupons){
-            Optional<Coupon> currCoupon=couponRepository.findById(coupon.getId());
-            String couponName="";
-            if(currCoupon.isPresent()){
-                couponName=currCoupon.get().getName();
-            }
-            System.out.println(currCoupon);
-            discount = switch (couponName) {
-                case "Coupon10" -> Math.max(discount, totalCost * coupon.getDiscountValue() / 100);
-                case "Coupon30" -> Math.max(discount, totalCost * coupon.getDiscountValue() / 100);
-                case "Coupon20" -> Math.max(discount, totalCost * coupon.getDiscountValue() / 100);
-                case "Coupon50" -> Math.max(discount, totalCost * coupon.getDiscountValue() / 100);
-                default -> discount;
-            };
-        }
-
+//        for (Coupon coupon : coupons){
+//            Optional<Coupon> currCoupon=couponRepository.findById(coupon.getId());
+//            String couponName="";
+//            if(currCoupon.isPresent()){
+//                couponName=currCoupon.get().getName();
+//            }
+//            discount = switch (couponName) {
+//                case "Coupon10" -> Math.max(discount, totalCost * coupon.getDiscountValue() / 100);
+//                case "Coupon30" -> Math.max(discount, totalCost * coupon.getDiscountValue() / 100);
+//                case "Coupon20" -> Math.max(discount, totalCost * coupon.getDiscountValue() / 100);
+//                case "Coupon50" -> Math.max(discount, totalCost * coupon.getDiscountValue() / 100);
+//                default -> discount;
+//            };
+//        }
+        appliedCoupons.add(appliedCoupon);
         return discount;
     }
     public Iterable<RentalOrder> allRentralOrder() {

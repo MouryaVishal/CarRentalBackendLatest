@@ -62,6 +62,7 @@ public class CarService implements CarServiceInterface {
 
     public ResponseEntity<Object> increseCountOfCarByName(String name,int byNum){
         Optional<Car> car=carRepository.findByName(name);
+
         if(car.isEmpty()){
             return new ResponseEntity<>("Car with id:"+name+" is not provide by Company",HttpStatus.NOT_FOUND);
         }
